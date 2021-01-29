@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+<configuration>
+	 <include resource = "org/springframework/boot/logging/logback/base.xml" />
+	 <logger name = "org.springframework.web" level = "DEBUG" />
+</configuration> 
+ -->
+<configuration>
+	 <include resource = "org/springframework/boot/logging/logback/defaults.xml"  />
+	 <property name = "LOG_FILE" value = "${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}" />
+	 <include resource = "org/springframework/boot/logging/logback/console-appender.xml"  />
+	 <!-- 
+	 <include resource = "org/springframework/boot/logging/logback/file-appender.xml"  />
+	  -->
+	  
+	<appender name="FILE-AP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <file>${FINANCE_LOG_FILE}</file>
+	    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+	        <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n</Pattern>
+	    </encoder>
+	    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+	        <fileNamePattern>${FINANCE_LOG_FILE}_%d{dd-MM-yyyy}_%i.log</fileNamePattern>
+	        <maxFileSize>50MB</maxFileSize>
+	        <maxHistory>10</maxHistory>
+	        <totalSizeCap>100MB</totalSizeCap>
+	    </rollingPolicy>
+	</appender>
+
+  
+	 
+	 <root level = "debug" >
+		 
+		 <appender-ref ref = "FILE-AP"  />
+		 
+		 <!-- 
+		 <appender-ref ref = "FILE"  />
+		  -->
+		 <!-- <appender-ref ref = "DB" /> -->
+		  
+		 <appender-ref ref = "CONSOLE" />
+		 
+	 </root>
+</configuration>

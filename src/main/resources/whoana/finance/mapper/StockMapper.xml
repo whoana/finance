@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="whoana.finance.mapper.StockMapper">
+		<!--
+		<cache/>
+		-->
+
+	<select id="existsFx" resultType="Integer">
+		select count(*) as cnt from TYAH007 where SYMBOL = #{symbol} and GET_DAY = #{getDay}
+	</select>
+
+	<insert id="insertFx">
+		insert into TYAH007 (
+			SYMBOL
+			,GET_DAY
+			,PRICE
+			,REG_DATE
+		) values (
+			#{fx.symbol}
+			,#{getDay}
+			,#{fx.price}
+			,#{regDate}
+		)
+	</insert>
+
+	<update id="updateFx">
+		update TYAH007
+			 set PRICE	= #{fx.price}
+					,MOD_DATE = #{modDate}
+		where SYMBOL   = #{fx.symbol}
+			 and GET_DAY  = #{getDay}
+	</update>
+
+
+	<select id="existsStock" resultType="Integer">
+		select count(*) as cnt from TYAH001 where SYMBOL = #{symbol}
+	</select>
+
+	<insert id="insertHistoricalQuotes">
+		INSERT INTO TYAH005
+		(SYMBOL, TRADE_DATE, "OPEN", LOW, HIGH, "CLOSE", ADJ_CLOSE, VOLUME)
+		VALUES(#{symbol}, #{tradeDate}, #{historicalQuote.open}, #{historicalQuote.low}, #{historicalQuote.high}, #{historicalQuote.close}, #{historicalQuote.adjClose}, #{historicalQuote.volume});
+	</insert>
+
+	<delete id="deleteHistoricalQuotes">
+		delete from TYAH005 where SYMBOL = #{symbol} and TRADE_DATE = #{tradeDate}
+	</delete>
+
+	<insert id="insertHistoricalDividends">
+		INSERT INTO TYAH006
+		(SYMBOL, DIVIDEND_DATE, ADJ_DIVIDEND)
+		VALUES(#{symbol}, #{dividendDate}, #{historicalDividend.adjDividend})
+	</insert>
+
+	<delete id="deleteHistoricalDividends">
+		delete from TYAH006 where SYMBOL = #{symbol} and DIVIDEND_DATE = #{dividendDate}
+	</delete>
+
+	<insert id="insertStock">
+		insert into TYAH001 (
+			SYMBOL
+			,NAME
+			,CURRENCY
+			,STOCK_EXCHANGE
+			,REG_DATE
+			,MOD_DATE
+		) values (
+			#{symbol}
+			,#{name}
+			,#{currency}
+			,#{exchange}
+			,#{regDate}
+			,#{modDate}
+		)
+	</insert>
+
+	<update id="updateStock">
+		update TYAH001
+			 set NAME			  = #{name}
+					,CURRENCY		  = #{currency}
+					,STOCK_EXCHANGE = #{exchange}
+					,MOD_DATE		  = #{modDate}
+		where SYMBOL 		  = #{symbol}
+	</update>
+
+	<select id="existsQuote" resultType="Integer">
+		select count(*) as cnt from TYAH002 where SYMBOL = #{symbol} and GET_DATE = #{getDate}
+	</select>
+
+	<insert id="insertQuote">
+		insert into TYAH002 (
+			SYMBOL
+			,GET_DATE
+			,ASK
+			,ASK_SIZE
+			,BID
+			,BID_SIZE
+			,PRICE
+			,LAST_TRADE_TIME
+			,OPEN
+			,PREVIOUS_CLOSE
+			,DAY_HEIGH
+			,DAY_LOW
+			,YEAR_HIGH
+			,YEAR_LOW
+			,PRICE_AVG50
+			,PRICE_AVG200
+			,VOLUME
+			,AVG_VOLUME
+			,CHANGE
+			,CHANGE_PER
+			,CHANGE_YEAR_LOW
+			,CHANGE_YEAR_LOW_PER
+			,CHANGE_YEAR_HIGH
+			,CHANGE_YEAR_HIGH_PER
+			,CHANGE_AVG50
+			,CHANGE_AVG50_PER
+			,CHANGE_AVG200
+			,CHANGE_AVG200_PER
+			,REG_DATE
+			,MOD_DATE
+		) values (
+			#{quote.symbol}
+			,#{getDate}
+			,#{quote.ask}
+			,#{quote.askSize}
+			,#{quote.bid}
+			,#{quote.bidSize}
+			,#{quote.price}
+			,#{quote.lastTradeTimeStr}
+			,#{quote.open}
+			,#{quote.previousClose}
+			,#{quote.dayHigh}
+			,#{quote.dayLow}
+			,#{quote.yearHigh}
+			,#{quote.yearLow}
+			,#{quote.priceAvg50}
+			,#{quote.priceAvg200}
+			,#{quote.volume}
+			,#{quote.avgVolume}
+			,#{quote.change}
+			,#{quote.changeInPercent}
+			,#{quote.changeFromYearLow}
+			,#{quote.changeFromYearLowInPercent}
+			,#{quote.changeFromYearHigh}
+			,#{quote.changeFromYearHighInPercent}
+			,#{quote.changeFromAvg50}
+			,#{quote.changeFromAvg50InPercent}
+			,#{quote.changeFromAvg200}
+			,#{quote.changeFromAvg200InPercent}
+			,#{regDate}
+			,null
+		)
+	</insert>
+
+	<update id="updateQuote">
+		update TYAH002
+			 set ASK 			   		= #{quote.ask}
+				,ASK_SIZE 	   		= #{quote.askSize}
+				,BID			   		= #{quote.bid}
+				,BID_SIZE 	   		= #{quote.bidSize}
+				,PRICE 		   		= #{quote.price}
+				,LAST_TRADE_TIME 		= #{quote.lastTradeTimeStr}
+				,OPEN			   		= #{quote.open}
+				,PREVIOUS_CLOSE 		= #{quote.previousClose}
+				,DAY_HEIGH 	  		= #{quote.dayHigh}
+				,DAY_LOW 		  		= #{quote.dayLow}
+				,YEAR_HIGH 			= #{quote.yearHigh}
+				,YEAR_LOW 			= #{quote.yearLow}
+				,PRICE_AVG50 			= #{quote.priceAvg50}
+				,PRICE_AVG200 		= #{quote.priceAvg200}
+				,VOLUME 				= #{quote.volume}
+				,AVG_VOLUME 			= #{quote.avgVolume}
+				,CHANGE 				= #{quote.change}
+				,CHANGE_PER 			= #{quote.changeInPercent}
+				,CHANGE_YEAR_LOW 		= #{quote.changeFromYearLow}
+				,CHANGE_YEAR_LOW_PER 	= #{quote.changeFromYearLowInPercent}
+				,CHANGE_YEAR_HIGH 	= #{quote.changeFromYearHigh}
+				,CHANGE_YEAR_HIGH_PER = #{quote.changeFromYearHighInPercent}
+				,CHANGE_AVG50 		= #{quote.changeFromAvg50}
+				,CHANGE_AVG50_PER 	= #{quote.changeFromAvg50InPercent}
+				,CHANGE_AVG200 		= #{quote.changeFromAvg200}
+				,CHANGE_AVG200_PER 	= #{quote.changeFromAvg200InPercent}
+					,MOD_DATE	= #{modDate}
+		where SYMBOL 	= #{quote.symbol}
+			 and GET_DATE = #{getDate}
+	</update>
+
+
+	<update id="updateStockPrice">
+		update TYAH002
+			 set PRICE    = #{price}
+				 , MOD_DATE	= #{modDate}
+		where SYMBOL   = #{symbol}
+			 and GET_DATE = #{getDate}
+	</update>
+
+	<select id="existsStockStats" resultType="Integer">
+		select count(*) as cnt from TYAH003 where SYMBOL = #{symbol} and GET_DATE = #{getDate}
+	</select>
+
+	<insert id="insertStockStats">
+		insert into TYAH003 (
+			SYMBOL
+			,GET_DATE
+			,MARKET_CAP
+			,SHARES
+			,EPS
+			,PE
+			,PEG
+			,EPS_EST_CURR_YEAR
+			,EPS_EST_NEXT_QUARTER
+			,EPS_EST_NEXT_YEAR
+			,PRICE_BOOK
+			,BOOK_VALUE_PER_PRICE
+			,REVENUE
+			,ONE_YEAR_TARGET_PRICE
+			,EARNINGS_ANNOUNCEMENT
+			,ROE
+			,EBITDA
+			,REG_DATE
+			,MOD_DATE
+		) values (
+			#{stockStats.symbol}
+			,#{getDate}
+			,#{stockStats.marketCap}
+			,#{stockStats.sharesOutstanding}
+			,#{stockStats.eps}
+			,#{stockStats.pe}
+			,#{stockStats.peg}
+			,#{stockStats.epsEstimateCurrentYear}
+			,#{stockStats.epsEstimateNextQuarter}
+			,#{stockStats.epsEstimateNextYear}
+			,#{stockStats.priceBook}
+			,#{stockStats.bookValuePerShare}
+			,#{stockStats.revenue}
+			,#{stockStats.oneYearTargetPrice}
+			,#{earningsAnnouncement}
+			,#{roe}
+			,#{ebitda}
+			,#{regDate}
+			,null
+		)
+	</insert>
+
+	<update id="updateStockStats">
+		update TYAH003
+			 set   MARKET_CAP				= #{stockStats.marketCap}
+				,SHARES					= #{stockStats.sharesOutstanding}
+				,EPS					= #{stockStats.eps}
+				,PE						= #{stockStats.pe}
+				,PEG					= #{stockStats.peg}
+				,EPS_EST_CURR_YEAR		= #{stockStats.epsEstimateCurrentYear}
+				,EPS_EST_NEXT_QUARTER	= #{stockStats.epsEstimateNextQuarter}
+				,EPS_EST_NEXT_YEAR		= #{stockStats.epsEstimateNextYear}
+				,PRICE_BOOK				= #{stockStats.priceBook}
+				,BOOK_VALUE_PER_PRICE	= #{stockStats.bookValuePerShare}
+				,REVENUE				= #{stockStats.revenue}
+				,ONE_YEAR_TARGET_PRICE	= #{stockStats.oneYearTargetPrice}
+				,EARNINGS_ANNOUNCEMENT	= #{earningsAnnouncement}
+				,ROE					= #{roe}
+				,EBITDA					= #{ebitda}
+						,MOD_DATE				= #{modDate}
+		where SYMBOL 					= #{stockStats.symbol}
+			 and GET_DATE 				= #{getDate}
+	</update>
+
+
+
+
+	<insert id="insertPortfolio">
+		insert into TPOR001 (
+			PORTFOLIO_ID
+			,NAME
+			,REG_DATE
+		) values (
+			#{portfolioId}
+			,#{name}
+			,#{regDate}
+		)
+	</insert>
+
+	<delete id="deletePortfolio">
+		delete from TPOR001 where PORTFOLIO_ID = #{portfolioId}
+	</delete>
+
+
+	<insert id="insertPortfolioPosition">
+
+		insert into TPOR002 (
+			PORTFOLIO_ID
+			,SYMBOL
+			,TRADE_DAY
+			,PRICE
+			,QTY
+			,AMT
+		) values (
+			#{portfolioId}
+			,#{symbol}
+			,#{tradeDay}
+			,#{price}
+			,#{qty}
+			,#{amt}
+		)
+	</insert>
+
+	<delete id="deletePortfolioPositions">
+		delete
+			from TPOR002
+				 where PORTFOLIO_ID = #{portfolioId}
+	</delete>
+
+	<select id="getStockSymbols" resultType="String">
+		select SYMBOL from TYAH001 order by SYMBOL
+	</select>
+
+	<delete id="deleteStockDividend">
+		delete from TYAH004
+		WHERE SYMBOL   = #{symbol}
+			AND PAY_DATE = #{payDate}
+	</delete>
+
+	<insert id="insertStockDividend">
+		INSERT INTO TYAH004
+		(SYMBOL, PAY_DATE, EX_DATE, ANNUAL_YIELD, ANNUAL_YIELD_PER, REG_DATE, MOD_DATE)
+		VALUES(#{symbol}, #{payDate}, #{exDate}, #{dividend.annualYield}, #{dividend.annualYieldPercent}, #{regDate}, #{regDate});
+	</insert>
+
+	<select id="getPortfolioPerformance">
+		SELECT
+		    100 * (sum(a.USD_CUR_AMT) - sum(a.USD_AMT)) / sum(a.USD_AMT) AS RETURN_RATE
+		   ,sum(a.USD_CUR_AMT) - sum(a.USD_AMT) AS USD_RETURN_AMT
+		   ,sum(a.WON_CUR_AMT) - sum(a.WON_AMT) AS WON_RETURN_AMT
+		   ,round(sum(a.USD_AMT),0) AS AMT_USD
+		   ,round(sum(a.WON_AMT),0) AS AMT_WON
+		   ,round(sum(a.USD_CUR_AMT),0) AS USD_CUR_AMT
+		   ,round(sum(a.WON_CUR_AMT),0) AS WON_CUR_AMT
+		FROM (
+			SELECT
+				 decode(a.CURRENCY, 'USD', a.AVG_PRICE * 1093.44000 , a.AVG_PRICE) 	AS WON_AVG_PRICE
+				,decode(a.CURRENCY, 'USD', a.AMT * 1093.44000 , a.AMT) 				AS WON_AMT
+				,decode(a.CURRENCY, 'KRW', a.AVG_PRICE / 1093.44000 , a.AVG_PRICE) 	AS USD_AVG_PRICE
+				,decode(a.CURRENCY, 'KRW', a.AMT / 1093.44000 , a.AMT) 				AS USD_AMT
+				,decode(a.CURRENCY, 'USD', a.QTY * a.CPRICE * 1093.44000 , a.QTY * a.CPRICE) AS WON_CUR_AMT
+				,decode(a.CURRENCY, 'KRW', a.QTY * a.CPRICE / 1093.44000 , a.QTY * a.CPRICE) AS USD_CUR_AMT
+			  FROM (
+				SELECT
+					 a.SYMBOL
+					,a.AMT
+					,a.QTY
+					,(a.AMT/a.QTY) AS AVG_PRICE
+					,b.CURRENCY
+					,b.STOCK_EXCHANGE
+					,(SELECT p."CLOSE" FROM TYAH005 p WHERE p.TRADE_DATE = (SELECT max(TRADE_DATE) FROM TYAH005 WHERE SYMBOL = a.SYMBOL ) AND p.SYMBOL = a.SYMBOL ) AS CPRICE
+				 FROM (
+					SELECT
+				     	 a.PORTFOLIO_ID
+				     	,a.SYMBOL
+				     	,sum(a.QTY) AS qty
+				     	,sum(a.QTY * a.PRICE ) AS amt
+				    FROM TPOR002 a
+				   WHERE a.PORTFOLIO_ID = #{portfolio.portfolioId}
+				   GROUP BY a.SYMBOL
+				   ) a
+				INNER JOIN TYAH001 b
+				        ON a.SYMBOL = b.SYMBOL
+			) a
+		) a
+
+	</select>
+
+	<select id="getStockPerformance">
+
+
+	</select>
+
+</mapper>

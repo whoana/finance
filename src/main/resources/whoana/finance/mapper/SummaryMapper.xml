@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="whoana.finance.mapper.SummaryMapper">
+  	<!--
+  	<cache/>
+  	-->
+ 
+	<delete id="deleteSummaryDaily">
+		delete from TSUM001 where DAY = #{day}
+	</delete>
+	 
+
+	<insert id="summaryDaily">
+	<![CDATA[
+		INSERT INTO TSUM001 (
+			 PORTFOLIO_ID
+			,SYMBOL
+			,DAY
+			,QTY
+			,PRICE
+			,AMT
+			,CUR_PRICE
+			,CUR_AMT
+			,EARNING
+			,EARNING_RATE
+			,REG_DATE
+		)
+		select 
+		     PORTFOLIO_ID  
+		    ,SYMBOL  
+		    ,#{day} as DAY 
+		    ,sum(QTY) AS qty  
+		    ,avg(BUY_PRICE) AS price
+		    ,sum(AMT) AS amt
+		    ,avg(CUR_PRICE) AS cur_price
+		    ,sum(CUR_AMT)   AS cur_amt
+		    ,sum(CUR_AMT - AMT) as EARNING
+		    ,round(decode(sum(AMT), 0 , 0, 100 * (sum(CUR_AMT - AMT)) / sum(AMT)),2)  as EARNING_RATE
+		    ,#{regDate}  
+		from(
+			select 
+			     a.PORTFOLIO_ID  
+			    ,a.SYMBOL  
+			    ,a.TRADE_DAY as DAY  
+			    ,a.QTY  
+			    ,a.AMT
+			    ,a.PRICE as BUY_PRICE
+			    ,b.PRICE as CUR_PRICE
+			    ,(a.QTY * b.PRICE)  as CUR_AMT 
+			  from TPOR002 a
+			 inner join TYAH002 b
+			      on a.TRADE_DAY <= #{day}
+			     and a.SYMBOL = b.SYMBOL 
+			     and b.GET_DATE = (SELECT max(get_date) FROM TYAH002 WHERE GET_DATE <= #{day})  
+		)
+		GROUP BY 
+			 PORTFOLIO_ID  
+		    ,SYMBOL  
+		    ,DAY 
+	]]> 
+	</insert>
+	
+	<select id="selectDailyEarning" resultType="Map">
+	<![CDATA[
+		SELECT 
+			a.PORTFOLIO_ID  as "portfolioId", 
+			a.SYMBOL		as "symbol", 
+			a.DAY			as "day", 
+			a.EARNING - b.EARNING AS "dailyEarning",
+			decode(b.AMT, 0 , 0,(100 * (a.EARNING - b.EARNING) / b.AMT)) AS "dailyEarningRate"
+		  FROM TSUM001 a 
+		 INNER JOIN TSUM001 b
+		    ON a.PORTFOLIO_ID = b.PORTFOLIO_ID
+		   AND a.SYMBOL = b.SYMBOL
+		   AND a.DAY = #{day}
+		   AND b.DAY = (SELECT max(DAY) FROM TSUM001 WHERE DAY <  #{day} AND AMT > 0)
+		   AND a.AMT > 0 
+		   AND b.AMT > 0
+	]]>   	
+	</select>
+	
+	<update id="updateDailyEarning" parameterType="Map">
+	
+		update TSUM001
+		   set DAILY_EARNING 	  = #{dailyEarning}
+			  ,DAILY_EARNING_RATE = #{dailyEarningRate}
+	     where PORTFOLIO_ID       = #{portfolioId}
+		   and SYMBOL  			  = #{symbol}
+		   and DAY				  = #{day}
+	</update>
+	
+	
+	
+	<delete id="deleteSummaryMonthly">
+		delete from TSUM002 where MONTH = #{month}
+	</delete>
+	
+	
+	<insert id="summaryMonthly">
+	<![CDATA[
+ 		INSERT INTO TSUM002 (
+			 PORTFOLIO_ID
+			,SYMBOL
+			,MONTH
+			,QTY
+			,PRICE
+			,AMT
+			,CUR_PRICE
+			,CUR_AMT
+			,EARNING
+			,EARNING_RATE
+			,REG_DATE
+		)
+		
+		SELECT		   	
+		     a.PORTFOLIO_ID  
+		    ,a.SYMBOL  
+		    ,substr(a.DAY,1, 6) as MONTH
+		    ,a.QTY  
+		    ,a.AMT
+		    ,a.PRICE
+		    ,a.CUR_PRICE
+		    ,a.CUR_AMT 
+		    ,a.EARNING
+		    ,a.EARNING_RATE
+		    ,#{regDate} 
+		  from TSUM001 a
+            WHERE a.DAY = (SELECT max(DAY) FROM TSUM001 WHERE DAY >= #{from} AND DAY <= #{to})				
+	]]>	
+	</insert>
+	 
+	 
+	 	
+	<select id="selectMonthlyEarning" resultType="Map">
+	<![CDATA[
+		SELECT 
+			a.PORTFOLIO_ID  as "portfolioId", 
+			a.SYMBOL		as "symbol", 
+			a.MONTH			as "month", 
+			a.EARNING - b.EARNING AS "monthlyEarning",
+			decode(b.AMT, 0 , 0,(100 * (a.EARNING - b.EARNING) / b.AMT)) AS "monthlyEarningRate"
+		  FROM TSUM002 a 
+		 INNER JOIN TSUM002 b
+		    ON a.PORTFOLIO_ID = b.PORTFOLIO_ID
+		   AND a.SYMBOL = b.SYMBOL
+		   AND a.MONTH = #{month}
+		   AND b.MONTH = (SELECT max(MONTH) FROM TSUM002 WHERE MONTH <  #{month} AND AMT > 0)
+		   AND a.AMT > 0 
+		   AND b.AMT > 0
+	]]>   	
+	</select>
+	
+	<update id="updateMonthlyEarning" parameterType="Map">
+	
+		update TSUM002
+		   set MONTHLY_EARNING 	    = #{monthlyEarning}
+			  ,MONTHLY_EARNING_RATE = #{monthlyEarningRate}
+	     where PORTFOLIO_ID         = #{portfolioId}
+		   and SYMBOL  			    = #{symbol}
+		   and MONTH			    = #{month}
+	</update>
+	
+	
+	<delete id="deleteSummaryAnnually">
+		delete from TSUM003 where YEAR = #{year}
+	</delete>
+	
+	
+	<insert id="summaryAnnually">
+	<![CDATA[
+ 		INSERT INTO TSUM003 (
+			 PORTFOLIO_ID
+			,SYMBOL
+			,YEAR
+			,QTY
+			,PRICE
+			,AMT
+			,CUR_PRICE
+			,CUR_AMT
+			,EARNING
+			,EARNING_RATE
+			,REG_DATE
+		)
+		SELECT		   	
+		     a.PORTFOLIO_ID  
+		    ,a.SYMBOL  
+		    ,substr(a.MONTH,1, 4) as YEAR
+		    ,a.QTY  
+		    ,a.AMT
+		    ,a.PRICE
+		    ,a.CUR_PRICE
+		    ,a.CUR_AMT 
+		    ,a.EARNING
+		    ,a.EARNING_RATE 
+		    ,#{regDate}
+		  from TSUM002 a
+            WHERE a.MONTH = (SELECT max(MONTH) FROM TSUM002 WHERE MONTH >= #{from} AND MONTH <= #{to}) 
+			
+	]]>	
+	</insert>
+	 
+	<select id="selectAnnuallyEarning" resultType="Map">
+	<![CDATA[
+		SELECT 
+			a.PORTFOLIO_ID  as "portfolioId", 
+			a.SYMBOL		as "symbol", 
+			a.YEAR			as "year", 
+			a.EARNING - b.EARNING AS "annuallyEarning",
+			decode(b.AMT, 0 , 0,(100 * (a.EARNING - b.EARNING) / b.AMT)) AS "annuallyEarningRate"
+		  FROM TSUM003 a 
+		 INNER JOIN TSUM003 b
+		    ON a.PORTFOLIO_ID = b.PORTFOLIO_ID
+		   AND a.SYMBOL = b.SYMBOL
+		   AND a.YEAR = #{year}
+		   AND b.YEAR = (SELECT max(YEAR) FROM TSUM003 WHERE YEAR <  #{year} AND AMT > 0)
+		   AND a.AMT > 0 
+		   AND b.AMT > 0
+	]]>   	
+	</select>
+	
+	<update id="updateAnnuallyEarning" parameterType="Map">
+	
+		update TSUM003
+		   set ANNUALLY_EARNING 	 = #{annuallyEarning}
+			  ,ANNUALLY_EARNING_RATE = #{annuallyEarningRate}
+	     where PORTFOLIO_ID          = #{portfolioId}
+		   and SYMBOL  			     = #{symbol}
+		   and YEAR			         = #{year}
+	</update>
+	
+</mapper>

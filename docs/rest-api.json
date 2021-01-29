@@ -1,0 +1,55 @@
+{
+	"dataset": {
+		"id": 9775409,
+		"dataset_code": "AAPL",
+		"database_code": "WIKI",
+		"name": "Apple Inc (AAPL) Prices, Dividends, Splits and Trading Volume",
+		"description": "End of day open, high, low, close and volume, dividends and splits, and split/dividend adjusted open, high, low close and volume for Apple Inc. (AAPL). Ex-Dividend is non-zero on ex-dividend dates. Split Ratio is 1 on non-split dates. Adjusted prices are calculated per CRSP (\u003ca href=\"http://www.crsp.com/products/documentation/crsp-calculations\" rel=\"nofollow\" target=\"blank\"\u003ewww.crsp.com/products/documentation/crsp-calculations\u003c/a\u003e)\r\n\r\n\u003cp\u003eThis data is in the public domain. You may copy, distribute, disseminate or include the data in other products for commercial and/or noncommercial purposes.\u003c/p\u003e\r\n\u003cp\u003eThis data is part of Quandl's Wiki initiative to get financial data permanently into the public domain. Quandl relies on users like you to flag errors and provide data where data is wrong or missing. Get involved: \u003ca href=\"mailto:connect@quandl.com\" rel=\"nofollow\" target=\"blank\"\u003econnect@quandl.com\u003c/a\u003e",
+		"refreshed_at": "2018-03-27T21:46:10.101Z",
+		"newest_available_date": "2018-03-27",
+		"oldest_available_date": "1980-12-12",
+		"column_names": [
+			"Date",
+			"Open",
+			"High",
+			"Low",
+			"Close",
+			"Volume",
+			"Ex-Dividend",
+			"Split Ratio",
+			"Adj. Open",
+			"Adj. High",
+			"Adj. Low",
+			"Adj. Close",
+			"Adj. Volume"
+		],
+		"frequency": "daily",
+		"type": "Time Series",
+		"premium": false,
+		"limit": 1,
+		"transform": null,
+		"column_index": null,
+		"start_date": "1980-12-12",
+		"end_date": "2018-03-27",
+		"data": [
+			[
+				"2018-03-27",
+				173.68,
+				175.15,
+				166.92,
+				168.34,
+				38962839.0,
+				0.0,
+				1.0,
+				173.68,
+				175.15,
+				166.92,
+				168.34,
+				38962839.0
+			]
+		],
+		"collapse": null,
+		"order": null,
+		"database_id": 4922
+	}
+}

@@ -1,0 +1,224 @@
+{
+  "symbol": "AAPL",
+  "name": "Apple Inc.",
+  "currency": "USD",
+  "stockExchange": "NasdaqGS",
+  "quote": {
+    "symbol": "AAPL",
+    "timeZone": "America/New_York",
+    "ask": 275.33,
+    "askSize": 18,
+    "bid": 275.26,
+    "bidSize": 12,
+    "price": 275.15,
+    "lastTradeSize": null,
+    "lastTradeDateStr": null,
+    "lastTradeTimeStr": null,
+    "lastTradeTime": "2019-12-13T21:00:01.000+0000",
+    "open": 271.46,
+    "previousClose": 271.46,
+    "dayLow": 270.93,
+    "dayHigh": 275.3,
+    "yearLow": 142,
+    "yearHigh": 275.3,
+    "priceAvg50": 261.63757,
+    "priceAvg200": 221.83546,
+    "volume": 33432806,
+    "avgVolume": 24827453,
+    "change": 3.69,
+    "changeInPercent": 1.36,
+    "changeFromYearLow": 133.15,
+    "changeFromYearLowInPercent": 93.77,
+    "changeFromYearHigh": -0.15,
+    "changeFromYearHighInPercent": -0.05,
+    "changeFromAvg50": 13.51243,
+    "changeFromAvg50InPercent": 5.16,
+    "changeFromAvg200": 53.31454,
+    "changeFromAvg200InPercent": 24.03
+  },
+  "stats": {
+    "symbol": "AAPL",
+    "marketCap": 1243457781760,
+    "sharesFloat": null,
+    "sharesOutstanding": 4519199744,
+    "sharesOwned": null,
+    "eps": 11.89,
+    "pe": 23.141294,
+    "peg": null,
+    "epsEstimateCurrentYear": 14.9,
+    "epsEstimateNextQuarter": null,
+    "epsEstimateNextYear": null,
+    "priceBook": 13.510925,
+    "priceSales": null,
+    "bookValuePerShare": 20.365,
+    "revenue": null,
+    "oneYearTargetPrice": null,
+    "shortRatio": null,
+    "earningsAnnouncement": "2019-10-30T16:30:00.000+0000",
+    "roe": 0,
+    "ebitda": null
+  },
+  "dividend": {
+    "symbol": "AAPL",
+    "payDate": "2019-11-14T00:00:00.000+0000",
+    "exDate": null,
+    "annualYield": 3,
+    "annualYieldPercent": 1.1051352
+  },
+  "history": [
+    {
+      "symbol": "AAPL",
+      "date": "2018-12-31T15:00:00.000+0000",
+      "open": 154.889999,
+      "low": 142,
+      "high": 169,
+      "close": 166.440002,
+      "adjClose": 163.976242,
+      "volume": 828087400
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-01-31T15:00:00.000+0000",
+      "open": 166.960007,
+      "low": 165.929993,
+      "high": 175.869995,
+      "close": 173.149994,
+      "adjClose": 170.586929,
+      "volume": 472540600
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-02-28T15:00:00.000+0000",
+      "open": 174.279999,
+      "low": 169.5,
+      "high": 197.690002,
+      "close": 189.949997,
+      "adjClose": 187.940842,
+      "volume": 650981400
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-03-31T15:00:00.000+0000",
+      "open": 191.639999,
+      "low": 188.380005,
+      "high": 208.479996,
+      "close": 200.669998,
+      "adjClose": 198.547455,
+      "volume": 506117700
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-04-30T15:00:00.000+0000",
+      "open": 209.880005,
+      "low": 174.990005,
+      "high": 215.309998,
+      "close": 175.070007,
+      "adjClose": 173.218231,
+      "volume": 739456600
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-05-31T15:00:00.000+0000",
+      "open": 175.600006,
+      "low": 170.270004,
+      "high": 201.570007,
+      "close": 197.919998,
+      "adjClose": 196.580658,
+      "volume": 515187300
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-06-30T15:00:00.000+0000",
+      "open": 203.169998,
+      "low": 198.410004,
+      "high": 221.369995,
+      "close": 213.039993,
+      "adjClose": 211.598358,
+      "volume": 473957000
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-07-31T15:00:00.000+0000",
+      "open": 213.899994,
+      "low": 192.580002,
+      "high": 218.029999,
+      "close": 208.740005,
+      "adjClose": 207.327454,
+      "volume": 681074600
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-08-31T15:00:00.000+0000",
+      "open": 206.429993,
+      "low": 204.220001,
+      "high": 226.419998,
+      "close": 223.970001,
+      "adjClose": 223.299591,
+      "volume": 542567100
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-09-30T15:00:00.000+0000",
+      "open": 225.070007,
+      "low": 215.130005,
+      "high": 249.75,
+      "close": 248.759995,
+      "adjClose": 248.015381,
+      "volume": 608302700
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-10-31T15:00:00.000+0000",
+      "open": 249.539993,
+      "low": 249.160004,
+      "high": 268,
+      "close": 267.25,
+      "adjClose": 266.450043,
+      "volume": 448331500
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-11-30T15:00:00.000+0000",
+      "open": 267.269989,
+      "low": 256.290009,
+      "high": 272.559998,
+      "close": 271.459991,
+      "adjClose": 271.459991,
+      "volume": 222782300
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-12-12T15:00:00.000+0000",
+      "open": 271.459991,
+      "low": 270.929993,
+      "high": 275.299988,
+      "close": 275.149994,
+      "adjClose": 275.149994,
+      "volume": 33432806
+    }
+  ],
+  "dividendHistory": [
+    {
+      "symbol": "AAPL",
+      "date": "2019-11-06T15:00:00.000+0000",
+      "adjDividend": 0.77
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-02-07T15:00:00.000+0000",
+      "adjDividend": 0.73
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-05-09T15:00:00.000+0000",
+      "adjDividend": 0.77
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2019-08-08T15:00:00.000+0000",
+      "adjDividend": 0.77
+    }
+  ],
+  "splitHistory": [],
+  "valid": true
+}

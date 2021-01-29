@@ -1,0 +1,52 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.8.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+}
+
+group 'whoana.finance'
+version '1.0-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
+}
+
+dependencies {
+//   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+//   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework:spring-test'
+    //implementation 'junit:.junit'
+
+    testCompile group: 'junit', name: 'junit', version: '4.13.1'
+
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.1'
+    implementation 'com.h2database:h2'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    compile group: 'com.yahoofinance-api', name: 'YahooFinanceAPI', version: '3.15.0'
+    compile 'org.apache.commons:commons-lang3:3.1'
+    compile 'commons-io:commons-io:2.4'
+    compile 'com.google.api-client:google-api-client:1.22.0'
+    compile ('com.google.oauth-client:google-oauth-client-jetty:1.23.0'){
+        exclude  group: 'org.mortbay.jetty', module: 'servlet-api'
+    }
+    compile 'com.google.apis:google-api-services-sheets:v4-rev483-1.22.0'
+    compile 'org.springframework.boot:spring-boot-starter-mail'
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-math3
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+}
+
+test {
+    useJUnitPlatform()
+}

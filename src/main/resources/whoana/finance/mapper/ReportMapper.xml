@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="whoana.finance.mapper.ReportMapper">
+  	<!--
+  	<cache/>
+  	-->
+  
+	 
+	<select id="reportDailyPortfolio" resultType="java.util.LinkedHashMap">
+	<![CDATA[
+		SELECT   
+			'S'																	AS c1,
+			'U'																	AS c2,
+			'M'																	AS c3,
+			sum(a.amt * decode( b.currency, 'USD', c.currency, 1)) 				AS c4, 
+			sum(a.cur_amt * decode( b.currency, 'USD', c.currency, 1)) 			AS c5,
+			0   																AS c6,
+			0   																AS c7,
+			sum(a.earning * decode( b.currency, 'USD', c.currency, 1)) 			AS c8,
+			round(100 * sum(a.earning * decode( b.currency, 'USD', c.currency, 1)) / sum(a.amt * decode( b.currency, 'USD', c.currency, 1)), 2) 		AS c9,
+			sum(a.DAILY_EARNING  * decode( b.currency, 'USD', c.currency, 1)) 	AS c10,	
+			round(100 * sum(a.DAILY_EARNING  * decode( b.currency, 'USD', c.currency, 1)) / sum(a.amt * decode( b.currency, 'USD', c.currency, 1)), 2) 	AS c11
+		  FROM tsum001 a
+		 inner JOIN tyah001 b 
+		    on a.DAY = (SELECT max(DAY) FROM tsum001)
+		   AND a.PORTFOLIO_ID = #{portfolioId}
+		   AND b.SYMBOL = a.SYMBOL
+		   AND a.AMT <> 0 
+		LEFT OUTER JOIN 
+		(SELECT price AS currency FROM tyah007 WHERE GET_DAY = (SELECT max(get_day) FROM tyah007) AND SYMBOL = 'USDKRW=X') c
+		UNION ALL
+		SELECT * FROM (
+		SELECT
+		 	 nvl((SELECT NM||'('||a.ASSET_CD||')'   FROM TSTC001 WHERE "LEVEL" = '2' AND CD = a.ASSET_CD),'*') 		AS c1
+			,nvl((SELECT NM||'('||a.MARKET_CD||')'  FROM TSTC001 WHERE "LEVEL" = '1' AND CD = a.MARKET_CD),'*') 	AS c2
+			,nvl((SELECT NM||'('||a.PRODUCT_CD||')' FROM TSTC001 WHERE "LEVEL" = '3' AND CD = a.PRODUCT_CD),'*') 	AS c3
+			,nvl(a.AMT,0) 																							AS c4	
+			,nvl(b.CUR_AMT,0)  																						AS c5	
+			,nvl(a.PER,0) 																							AS c6
+			,nvl(a.TARGET_PCT * 100,0) 																				AS c7
+			,nvl(b.EARNING,0)          																				AS c8
+			,nvl(b.EARNING_RATE,0)     																				AS c9
+			,nvl(b.DAILY_EARNING ,0)   																				AS c10
+			,nvl(b.DAILY_EARNING_RATE,0) 																			AS c11
+		  FROM ( 
+			SELECT 
+				 TAG.ASSET_CD 
+				,TAG.MARKET_CD 
+				,TAG.PRODUCT_CD 
+				,POS.AMT 
+				,POS.TOTAL_AMT 
+				,POS.PER 
+				,TAG.TARGET_PCT 
+			  FROM TPOR003 TAG LEFT OUTER JOIN (  
+				SELECT 
+					 s2.ASSET_CD
+					,s2.MARKET_CD
+					,s2.PRODUCT_CD
+					,s2.AMT
+					,total.AMT AS TOTAL_AMT
+					,round(100 * s2.AMT / total.AMT, 2) AS PER
+				  FROM (
+					SELECT 
+						 s1.ASSET_CD
+						,s1.MARKET_CD
+						,s1.PRODUCT_CD
+						,sum(s1.amt * DECODE(s1.CURRENCY,'USD',(SELECT PRICE FROM TYAH007 WHERE SYMBOL = 'USDKRW=X' AND GET_DAY = (SELECT max(GET_DAY) FROM TYAH007)),1)) AS AMT 
+					  FROM ( 
+							 SELECT 
+								 a.SYMBOL
+								,a.QTY
+								,a.AMT
+								,b.NAME
+								,b.CURRENCY
+								,c.ASSET_CD
+								,c.MARKET_CD
+								,c.PRODUCT_CD
+					           FROM TPOR002 a
+					     INNER JOIN TYAH001 b
+					             ON a.SYMBOL = b.SYMBOL
+					            AND a.PORTFOLIO_ID = #{portfolioId}
+					     INNER JOIN TSTC002 c 
+					             ON c.SYMBOL = b.SYMBOL
+						) s1 
+					GROUP BY s1.ASSET_CD
+							,s1.MARKET_CD
+							,s1.PRODUCT_CD
+					) s2 
+				LEFT OUTER JOIN (
+						SELECT 
+							sum(a.amt * DECODE(b.CURRENCY,'USD',(SELECT PRICE FROM TYAH007 WHERE SYMBOL = 'USDKRW=X' AND GET_DAY = (SELECT max(GET_DAY) FROM TYAH007)),1)) AS AMT 
+					      FROM TPOR002 a
+					INNER JOIN TYAH001 b
+					        ON a.SYMBOL = b.SYMBOL
+					       AND a.PORTFOLIO_ID = #{portfolioId}
+				    ) total
+			 )  POS 
+			 ON TAG.ASSET_CD   = POS.ASSET_CD
+			AND TAG.MARKET_CD  = POS.MARKET_CD
+			AND TAG.PRODUCT_CD = POS.PRODUCT_CD
+		) a 
+		LEFT OUTER JOIN (
+			SELECT	
+				a.ASSET_CD,
+				a.MARKET_CD,
+				a.PRODUCT_CD,
+				sum(a.AMT * a.currency) AS AMT,
+				sum(a.CUR_AMT * a.currency) AS CUR_AMT,
+				sum(a.EARNING * a.currency) AS EARNING,
+				round(100 * sum(a.EARNING * a.currency) / sum(a.AMT * a.currency),2) AS EARNING_RATE,
+				sum(a.DAILY_EARNING * a.currency) AS DAILY_EARNING,
+				round(100 * sum(a.DAILY_EARNING * a.currency) / sum(a.AMT * a.currency),2) AS DAILY_EARNING_RATE
+			  FROM (  
+			  SELECT   
+					a.amt, 
+					a.cur_amt,
+					a.earning,
+					a.DAILY_EARNING,
+					decode( b.currency, 'USD', c.currency, 1) AS CURRENCY,
+					c.ASSET_CD,
+					c.MARKET_CD,
+					c.PRODUCT_CD
+				  FROM tsum001 a
+				 inner JOIN tyah001 b 
+				    on a.DAY = (SELECT max(DAY) FROM tsum001)
+				   AND a.PORTFOLIO_ID = #{portfolioId}
+				   AND b.SYMBOL = a.SYMBOL
+				   AND a.AMT <> 0
+				 INNER JOIN TSTC002 c
+				    ON c.SYMBOL = b.SYMBOL
+				LEFT OUTER JOIN 
+				(SELECT price AS currency FROM tyah007 WHERE GET_DAY = (SELECT max(get_day) FROM tyah007) AND SYMBOL = 'USDKRW=X') c
+			) a GROUP BY 
+				a.ASSET_CD,
+				a.MARKET_CD,
+				a.PRODUCT_CD
+		) b
+		 ON a.ASSET_CD   = b.ASSET_CD
+		AND a.MARKET_CD  = b.MARKET_CD
+		AND a.PRODUCT_CD = b.PRODUCT_CD
+		ORDER BY b.EARNING desc
+		) a
+	]]>   	
+	</select>
+	 
+	
+</mapper>
