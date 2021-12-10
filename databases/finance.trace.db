@@ -1,0 +1,196 @@
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "                  \000d\000aCREATE TABLE TSUM001 (\000d\000a\0009PORTFOLIO_ID VARCHAR2(50) NOT NULL,              \000d\000a\0009SYMBOL VARCHAR2(10) NOT NULL,         \000d\000a\0009DAY[*] VARCHAR2(8) NOT NULL,          \000d\000a\0009QTY INTEGER,           \000d\000a\0009AVG_PRICE DECIMAL(13,5),             \000d\000a\0009AMT NUMBER(13),           \000d\000a\0009CUR_AMT NUMBER(13),           \000d\000a\0009EARNING_RATE DECIMAL(13,5)          \000d\000a)"; expected "identifier"; SQL statement:
+/* 포트폴리오-수익률(일) */
+CREATE TABLE TSUM001 (
+	PORTFOLIO_ID VARCHAR2(50) NOT NULL, /* 포트폴리오ID */
+	SYMBOL VARCHAR2(10) NOT NULL, /* 심볼 */
+	DAY VARCHAR2(8) NOT NULL, /* 거래일 */
+	QTY INTEGER, /* 매입수량 */
+	AVG_PRICE DECIMAL(13,5), /* 평균매입단가 */
+	AMT NUMBER(13), /* 매입금액 */
+	CUR_AMT NUMBER(13), /* 평가금액 */
+	EARNING_RATE DECIMAL(13,5) /* 수익률 */
+) [42001-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM001" not found; SQL statement:
+COMMENT ON TABLE TSUM001 IS '포트폴리오-수익률(일)' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM001" not found; SQL statement:
+COMMENT ON COLUMN TSUM001.PORTFOLIO_ID IS '포트폴리오ID' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM001" not found; SQL statement:
+COMMENT ON COLUMN TSUM001.SYMBOL IS '심볼' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "COMMENT ON COLUMN TSUM001.DAY[*] IS '거래일'"; expected "identifier"; SQL statement:
+COMMENT ON COLUMN TSUM001.DAY IS '거래일' [42001-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM001" not found; SQL statement:
+COMMENT ON COLUMN TSUM001.QTY IS '매입수량' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM001" not found; SQL statement:
+COMMENT ON COLUMN TSUM001.AVG_PRICE IS '평균매입단가' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM001" not found; SQL statement:
+COMMENT ON COLUMN TSUM001.AMT IS '매입금액' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM001" not found; SQL statement:
+COMMENT ON COLUMN TSUM001.CUR_AMT IS '평가금액' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM001" not found; SQL statement:
+COMMENT ON COLUMN TSUM001.EARNING_RATE IS '수익률' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE UNIQUE INDEX PK_TSUM001\000d\000a\0009ON TSUM001 (\000d\000a\0009\0009PORTFOLIO_ID ASC,\000d\000a\0009\0009SYMBOL ASC,\000d\000a\0009\0009DAY[*] ASC\000d\000a\0009)"; expected "identifier"; SQL statement:
+CREATE UNIQUE INDEX PK_TSUM001
+	ON TSUM001 (
+		PORTFOLIO_ID ASC,
+		SYMBOL ASC,
+		DAY ASC
+	) [42001-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE TSUM001\000d\000a\0009ADD\000d\000a\0009\0009CONSTRAINT PK_TSUM001\000d\000a\0009\0009PRIMARY KEY (\000d\000a\0009\0009\0009PORTFOLIO_ID,\000d\000a\0009\0009\0009SYMBOL,\000d\000a\0009\0009\0009DAY[*]\000d\000a\0009\0009)"; expected "identifier"; SQL statement:
+ALTER TABLE TSUM001
+	ADD
+		CONSTRAINT PK_TSUM001
+		PRIMARY KEY (
+			PORTFOLIO_ID,
+			SYMBOL,
+			DAY
+		) [42001-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "                  \000d\000aCREATE TABLE TSUM002 (\000d\000a\0009PORTFOLIO_ID VARCHAR2(50) NOT NULL,              \000d\000a\0009SYMBOL VARCHAR2(10) NOT NULL,         \000d\000a\0009TRADE_DAY VARCHAR2(8) NOT NULL,          \000d\000a\0009MONTH[*] VARCHAR2(8),          \000d\000a\0009QTY INTEGER,           \000d\000a\0009AVG_PRICE DECIMAL(13,5),             \000d\000a\0009AMT NUMBER(13),           \000d\000a\0009CUR_AMT NUMBER(13),           \000d\000a\0009EARNING_RATE DECIMAL(13,5)          \000d\000a)"; expected "identifier"; SQL statement:
+/* 포트폴리오-수익율(월) */
+CREATE TABLE TSUM002 (
+	PORTFOLIO_ID VARCHAR2(50) NOT NULL, /* 포트폴리오ID */
+	SYMBOL VARCHAR2(10) NOT NULL, /* 심볼 */
+	TRADE_DAY VARCHAR2(8) NOT NULL, /* 거래일 */
+	MONTH VARCHAR2(8), /* 거래월 */
+	QTY INTEGER, /* 매입수량 */
+	AVG_PRICE DECIMAL(13,5), /* 평균매입단가 */
+	AMT NUMBER(13), /* 매입금액 */
+	CUR_AMT NUMBER(13), /* 평가금액 */
+	EARNING_RATE DECIMAL(13,5) /* 수익률 */
+) [42001-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+COMMENT ON TABLE TSUM002 IS '포트폴리오-수익율(월)' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+COMMENT ON COLUMN TSUM002.PORTFOLIO_ID IS '포트폴리오ID' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+COMMENT ON COLUMN TSUM002.SYMBOL IS '심볼' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+COMMENT ON COLUMN TSUM002.TRADE_DAY IS '거래일' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "COMMENT ON COLUMN TSUM002.MONTH[*] IS '거래월'"; expected "identifier"; SQL statement:
+COMMENT ON COLUMN TSUM002.MONTH IS '거래월' [42001-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+COMMENT ON COLUMN TSUM002.QTY IS '매입수량' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+COMMENT ON COLUMN TSUM002.AVG_PRICE IS '평균매입단가' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+COMMENT ON COLUMN TSUM002.AMT IS '매입금액' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+COMMENT ON COLUMN TSUM002.CUR_AMT IS '평가금액' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+COMMENT ON COLUMN TSUM002.EARNING_RATE IS '수익률' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+CREATE UNIQUE INDEX PK_TSUM002
+	ON TSUM002 (
+		PORTFOLIO_ID ASC,
+		SYMBOL ASC,
+		TRADE_DAY ASC
+	) [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM002" not found; SQL statement:
+ALTER TABLE TSUM002
+	ADD
+		CONSTRAINT PK_TSUM002
+		PRIMARY KEY (
+			PORTFOLIO_ID,
+			SYMBOL,
+			TRADE_DAY
+		) [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "                  \000d\000aCREATE TABLE TSUM003 (\000d\000a\0009PORTFOLIO_ID VARCHAR2(50) NOT NULL,              \000d\000a\0009SYMBOL VARCHAR2(10) NOT NULL,         \000d\000a\0009TRADE_DAY VARCHAR2(8) NOT NULL,          \000d\000a\0009YEAR[*] VARCHAR2(8),          \000d\000a\0009QTY INTEGER,           \000d\000a\0009AVG_PRICE DECIMAL(13,5),             \000d\000a\0009AMT NUMBER(13),           \000d\000a\0009CUR_AMT NUMBER(13),           \000d\000a\0009EARNING_RATE DECIMAL(13,5)          \000d\000a)"; expected "identifier"; SQL statement:
+/* 포트폴리오-수익률(년) */
+CREATE TABLE TSUM003 (
+	PORTFOLIO_ID VARCHAR2(50) NOT NULL, /* 포트폴리오ID */
+	SYMBOL VARCHAR2(10) NOT NULL, /* 심볼 */
+	TRADE_DAY VARCHAR2(8) NOT NULL, /* 거래일 */
+	YEAR VARCHAR2(8), /* 거래년 */
+	QTY INTEGER, /* 매입수량 */
+	AVG_PRICE DECIMAL(13,5), /* 평균매입단가 */
+	AMT NUMBER(13), /* 매입금액 */
+	CUR_AMT NUMBER(13), /* 평가금액 */
+	EARNING_RATE DECIMAL(13,5) /* 수익률 */
+) [42001-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+COMMENT ON TABLE TSUM003 IS '포트폴리오-수익률(년)' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+COMMENT ON COLUMN TSUM003.PORTFOLIO_ID IS '포트폴리오ID' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+COMMENT ON COLUMN TSUM003.SYMBOL IS '심볼' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+COMMENT ON COLUMN TSUM003.TRADE_DAY IS '거래일' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "COMMENT ON COLUMN TSUM003.YEAR[*] IS '거래년'"; expected "identifier"; SQL statement:
+COMMENT ON COLUMN TSUM003.YEAR IS '거래년' [42001-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+COMMENT ON COLUMN TSUM003.QTY IS '매입수량' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+COMMENT ON COLUMN TSUM003.AVG_PRICE IS '평균매입단가' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+COMMENT ON COLUMN TSUM003.AMT IS '매입금액' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+COMMENT ON COLUMN TSUM003.CUR_AMT IS '평가금액' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+COMMENT ON COLUMN TSUM003.EARNING_RATE IS '수익률' [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+CREATE UNIQUE INDEX PK_TSUM003
+	ON TSUM003 (
+		PORTFOLIO_ID ASC,
+		SYMBOL ASC,
+		TRADE_DAY ASC
+	) [42102-202]
+2021-12-09 08:44:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TSUM003" not found; SQL statement:
+ALTER TABLE TSUM003
+	ADD
+		CONSTRAINT PK_TSUM003
+		PRIMARY KEY (
+			PORTFOLIO_ID,
+			SYMBOL,
+			TRADE_DAY
+		) [42102-202]
+2021-12-09 09:17:07 database: wrong user or password; user: "WHOANA"
+org.h2.message.DbException: Wrong user name or password [28000-202]
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.get(DbException.java:188)
+	at org.h2.engine.Engine.openSession(Engine.java:154)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.server.TcpServerThread.run(TcpServerThread.java:174)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.h2.jdbc.JdbcSQLInvalidAuthorizationSpecException: Wrong user name or password [28000-202]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:510)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
+	... 8 more
