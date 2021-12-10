@@ -1,0 +1,37 @@
+StockServiceTest 에러 로그
+@Test
+	public void testUpsertStockInfo() {
+	
+2021-12-09 14:34:41.264 DEBUG 26680 --- [    Test worker] w.f.mapper.StockMapper.insertStockStats  : ==>  Preparing: insert into TYAH003 ( SYMBOL ,GET_DATE ,MARKET_CAP ,SHARES ,EPS ,PE ,PEG ,EPS_EST_CURR_YEAR ,EPS_EST_NEXT_QUARTER ,EPS_EST_NEXT_YEAR ,PRICE_BOOK ,BOOK_VALUE_PER_PRICE ,REVENUE ,ONE_YEAR_TARGET_PRICE ,EARNINGS_ANNOUNCEMENT ,ROE ,EBITDA ,REG_DATE ,MOD_DATE ) values ( ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,null ) 
+2021-12-09 14:34:41.267 DEBUG 26680 --- [    Test worker] w.f.mapper.StockMapper.insertStockStats  : ==> Parameters: 005935.KS(String), 20211209(String), 515265884323840(BigDecimal), 822886976(Long), null, null, null, null, null, null, null, null, null, null, (String), 0.0(Double), 0.0(Double), 20211209143438677(String)
+
+insert into TYAH003 ( 
+SYMBOL ,GET_DATE ,MARKET_CAP ,SHARES ,EPS ,PE ,PEG ,EPS_EST_CURR_YEAR ,EPS_EST_NEXT_QUARTER ,EPS_EST_NEXT_YEAR ,PRICE_BOOK ,BOOK_VALUE_PER_PRICE ,REVENUE ,ONE_YEAR_TARGET_PRICE ,EARNINGS_ANNOUNCEMENT ,ROE ,EBITDA ,REG_DATE ,MOD_DATE ) 
+values (
+'005935.KS',
+'20211209',
+515265884323840,
+822886976, null, null, null, null, null, null, null, null, null, null,
+'',
+0.0,
+0.0,
+'20211209143438677', null)
+
+
+ONL  데이터 없음 과거데이터라서 그럼 .
+    400 Bad Request: Data doesn't exist for startDate = 1577847600, endDate = 1609470000
+
+
+정상 URL :
+    https://query1.finance.yahoo.com/v7/finance/download/292150.KS?period1=1577847600&period2=1609470000&interval=1d&events=div&crumb=6nKvGLDK4m2
+
+실패 URL :
+    https://query1.finance.yahoo.com/v7/finance/download/371160.KS?period1=1577847600&period2=1609470000&interval=1d&crumb=6nKvGLDK4m2
+뒤부분에 events=div&  이게 빠져 있네.....?
+빠진 부분을 붙이면 성공하네.
+https://query1.finance.yahoo.com/v7/finance/download/371160.KS?period1=1577847600&period2=1609470000&interval=1d&events=div&crumb=6nKvGLDK4m2
+그런데 내려 받은 csv 파일에 값은 비어있어서.....어차피 에러
+무시.
+
+
+182480.KS	종목으로 20년 다시 테스트 해보자.

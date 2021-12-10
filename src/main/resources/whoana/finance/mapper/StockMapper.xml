@@ -86,7 +86,7 @@
 	</update>
 
 	<select id="existsQuote" resultType="Integer">
-		select count(*) as cnt from TYAH002 where SYMBOL = #{symbol} and GET_DATE = #{getDate}
+		select count(*) as cnt from TYAH002 where SYMBOL = #{symbol}
 	</select>
 
 	<insert id="insertQuote">
@@ -198,7 +198,7 @@
 	</update>
 
 	<select id="existsStockStats" resultType="Integer">
-		select count(*) as cnt from TYAH003 where SYMBOL = #{symbol} and GET_DATE = #{getDate}
+		select count(*) as cnt from TYAH003 where SYMBOL = #{symbol}
 	</select>
 
 	<insert id="insertStockStats">
@@ -376,4 +376,8 @@
 
 	</select>
 
+
+	<select id="getMySymbols" resultType="String">
+		select distinct symbol from quotes
+	</select>
 </mapper>

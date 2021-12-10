@@ -27,7 +27,7 @@ public interface StockMapper {
 	public int insertStock(Map<String, String> stockInfo);
 
 
-	public int existsQuote(@Param("symbol") String symbol, @Param("getDate")  String getDate);
+	public int existsQuote(@Param("symbol") String symbol);
 
 
 	public int insertQuote(@Param("regDate")  String regDate, @Param("getDate") String getDate, @Param("quote") StockQuote quote);
@@ -67,7 +67,7 @@ public interface StockMapper {
 	public List<String> getStockSymbols();
 
 
-	public int existsStockStats(@Param("symbol") String symbol, @Param("getDate")  String getDate);
+	public int existsStockStats(@Param("symbol") String symbol);
 
 
 	public void insertStockStats(@Param("regDate")  String regDate, @Param("getDate") String getDate,  @Param("earningsAnnouncement") String earningsAnnouncement, @Param("roe") double roe,  @Param("ebitda") double ebitda,  @Param("stockStats") StockStats stockStats);
@@ -102,4 +102,5 @@ public interface StockMapper {
 
 	public Performance getStockPerformance(@Param("symbol") String symbol, @Param("performance") Performance Performance);
 
+    List<String> getMySymbols();
 }

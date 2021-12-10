@@ -66,6 +66,8 @@ public class StockService {
 		return getFx("USDKRW=X");
 	}
 
+
+
 	/**
 	 * <pre>
 	 *  야후 파이낸스를 통해 주식정보를 가져와 로컬 데이터로 저장한다.
@@ -101,7 +103,7 @@ public class StockService {
 
 		//String getDate = date.substring(0, 8);
 		String getDate = day;
-		int quoteExists = stockMapper.existsQuote(symbol, getDate);
+		int quoteExists = stockMapper.existsQuote(symbol);
 		StockQuote quote = stock.getQuote();
 		String lastTradeTime = Util.getFormatedDate(quote.getLastTradeTime().getTimeInMillis(), Util.DEFAULT_DATE_FORMAT_MI);
 		quote.setLastTradeTimeStr(lastTradeTime);
@@ -124,7 +126,7 @@ public class StockService {
 		String earningsAnnouncement = stockStats.getEarningsAnnouncement() == null ? "": Util.getFormatedDate(stockStats.getEarningsAnnouncement().getTimeInMillis(), "yyyyMMdd");
 		double roe = stockStats.getROE() == null ? 0 : stockStats.getROE().doubleValue();
 		double ebitda = stockStats.getEBITDA() == null ? 0 : stockStats.getEBITDA().doubleValue();
-		int stockStatsExist = stockMapper.existsStockStats(symbol, getDate);
+		int stockStatsExist = stockMapper.existsStockStats(symbol);
 		if(stockStatsExist == 0) {
 			stockMapper.insertStockStats(regDate, getDate, earningsAnnouncement, roe, ebitda, stockStats);
 		}else {
@@ -175,7 +177,7 @@ public class StockService {
 		//String getDate = date.substring(0, 8);
 		//String getDate = day;
 		String getDate = Util.getFormatedDate(Util.DEFAULT_YMD_FORMAT);
-		int quoteExists = stockMapper.existsQuote(symbol, getDate);
+		int quoteExists = stockMapper.existsQuote(symbol);
 		StockQuote quote = stock.getQuote();
 		String lastTradeTime = Util.getFormatedDate(quote.getLastTradeTime().getTimeInMillis(), Util.DEFAULT_DATE_FORMAT_MI);
 		quote.setLastTradeTimeStr(lastTradeTime);
@@ -201,7 +203,7 @@ public class StockService {
 		String earningsAnnouncement = stockStats.getEarningsAnnouncement() == null ? "": Util.getFormatedDate(stockStats.getEarningsAnnouncement().getTimeInMillis(), "yyyyMMdd");
 		double roe = stockStats.getROE() == null ? 0 : stockStats.getROE().doubleValue();
 		double ebitda = stockStats.getEBITDA() == null ? 0 : stockStats.getEBITDA().doubleValue();
-		int stockStatsExist = stockMapper.existsStockStats(symbol, getDate);
+		int stockStatsExist = stockMapper.existsStockStats(symbol);
 		if(stockStatsExist == 0) {
 			stockMapper.insertStockStats(regDate, getDate, earningsAnnouncement, roe, ebitda, stockStats);
 		}else {
@@ -353,4 +355,97 @@ public class StockService {
 		return  stockMapper.getStockPerformance(symbol, Performance);
 	}
 
+	/**
+	 * <pre>
+	 *     finance.yahoo.com 으로 부터 내려받은 포트폴리오 데이터인 quotes 테이블로 부터 종목 리스트를 읽어 들인다.
+	 * </pre>
+	 * @return
+	 * @since 2021.12
+	 */
+	public List<String> getMySymbols(){
+		return stockMapper.getMySymbols();
+	}
+
+	/**
+	 * <pre>
+	 *     finance.yahoo.com 으로 부터 종목 정보를 읽어들여 TYAH001 ~ TYAH005 테이블 정보를 갱신한다.
+	 * </pre>
+	 * @param symbol
+	 * @param from
+	 * @param to
+	 * @since 2021.12
+	 */
+	public void upsertStockInfo(String symbol, Calendar from, Calendar to) throws Exception {
+		String regDate = Util.getFormatedDate(Util.DEFAULT_DATE_FORMAT_MI);
+		Stock stock = YahooFinance.get(symbol, from, to, Interval.DAILY);
+
+		//---------------------------------------------------------
+		// //TYAH001 종목 정보 upsert
+		//---------------------------------------------------------
+		Map<String, String> stockInfo = new HashMap<String, String>();
+		stockInfo.put("symbol",		stock.getSymbol());
+		stockInfo.put("currency",	stock.getCurrency());
+		stockInfo.put("exchange",	stock.getStockExchange());
+		stockInfo.put("name",		stock.getName());
+		stockInfo.put("regDate", 	regDate);
+		stockInfo.put("modDate", 	regDate);
+		int exists = stockMapper.existsStock(symbol); //TYAH001 종목 존재 유무
+		if(exists == 0) {
+			stockMapper.insertStock(stockInfo);
+		}else {
+			stockMapper.updateStock(stockInfo);
+		}
+		//---------------------------------------------------------
+		// //TYAH002 기존 정보 upsert
+		//---------------------------------------------------------
+		String getDate = Util.getFormatedDate(Util.DEFAULT_YMD_FORMAT);
+		int quoteExists = stockMapper.existsQuote(symbol); //TYAH0002 기본정보 유무
+		StockQuote quote = stock.getQuote();
+		String lastTradeTime = Util.getFormatedDate(stock.getQuote().getLastTradeTime().getTimeInMillis(), Util.DEFAULT_DATE_FORMAT_MI);
+		quote.setLastTradeTimeStr(lastTradeTime);
+		if(quoteExists == 0) {
+			stockMapper.insertQuote(regDate, getDate, quote);
+		}else {
+			stockMapper.updateQuote(regDate, getDate, quote);
+		}
+
+		//---------------------------------------------------------
+		// //TYAH003 펀더멘탈 정보 upsert
+		//---------------------------------------------------------
+		StockStats stockStats = stock.getStats();
+		String earningsAnnouncement = stockStats.getEarningsAnnouncement() == null ? "": Util.getFormatedDate(stockStats.getEarningsAnnouncement().getTimeInMillis(), "yyyyMMdd");
+		double roe = stockStats.getROE() == null ? 0 : stockStats.getROE().doubleValue();
+		double ebitda = stockStats.getEBITDA() == null ? 0 : stockStats.getEBITDA().doubleValue();
+		int stockStatsExist = stockMapper.existsStockStats(symbol);
+		if(stockStatsExist == 0) {
+			stockMapper.insertStockStats(regDate, getDate, earningsAnnouncement, roe, ebitda, stockStats);
+		}else {
+			stockMapper.updateStockStats(regDate, getDate, earningsAnnouncement, roe, ebitda, stockStats);
+		}
+
+		//-------------------------------------------------
+		// upsert dividend price TYAH004
+		//-------------------------------------------------
+		StockDividend dividend = stock.getDividend();
+		if(dividend != null && dividend.getPayDate() != null) {
+			upsertDividend(dividend);
+		}
+
+		//-------------------------------------------------
+		// upsert historical price TYAH005
+		//-------------------------------------------------
+		List<HistoricalQuote> history = stock.getHistory();
+		history.stream().forEach(historicalQuote -> {
+			String tradeDate = Util.getFormatedDate(historicalQuote.getDate().getTimeInMillis(), Util.DEFAULT_YMD_FORMAT);
+			stockMapper.deleteHistoricalQuotes(symbol, tradeDate);
+			stockMapper.insertHistoricalQuotes(symbol, tradeDate, historicalQuote, regDate);
+		});
+
+		//-------------------------------------------------
+		// upsert historical dividend TYAH006
+		//-------------------------------------------------
+		List<HistoricalDividend> historicalDividends = stock.getDividendHistory(from, to);
+		if(!Util.isEmpty(historicalDividends)) upsertHistoricalDividends(historicalDividends);
+
+	}
 }
