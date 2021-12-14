@@ -1,0 +1,315 @@
+package whoana.finance.service;
+
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Calendar;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@AutoConfigureMockMvc
+public class SummaryServiceTest {
+    Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    SummaryService summaryService;
+
+    @Test
+    public void testDoDailySummary(){
+
+        LocalDate from = LocalDate.of(2018, Month.DECEMBER, 31);
+        LocalDate to   = LocalDate.of(2021, Month.DECEMBER, 10);
+        for(LocalDate date = from ; date.isBefore(to) ; date = date.plusDays(1)) {
+            String portfolioId = "1";
+            String tday = date.format(DateTimeFormatter.BASIC_ISO_DATE);
+            logger.debug(tday + " summary start...");
+            summaryService.doDailySummery(portfolioId, tday);
+            logger.debug(tday + " summary end ...");
+//            try {
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//            }
+        }
+
+    }
+}
+
+
+
+
+
+
+
+	<!-- 202112, 일별누적집계 삭제 -->
+	<delete id="deleteDailySummary">
+		delete from TSUM001 where PORTFOLIO_ID = #{portfolioId} and TDATE = #{tday}
+	</delete>
+	<!-- 202112, 일별누적집계  -->
+	<insert id="doDailySummary">
+		<![CDATA[
+		insert into TSUM001 (
+			PORTFOLIO_ID,
+			SYMBOL,
+			TDATE,
+			QTY,
+			PRICE,
+			AMT,
+			CUR_PRICE,
+			CUR_AMT,
+			EARNING,
+			EARNING_RATE,
+			DAILY_EARNING,
+			DAILY_EARNING_RATE,
+			REG_DATE )
+		select
+			#{portfolioId} as PORTFOLIO_ID,
+			a.SYMBOL,
+			#{tday} as TDATE,
+			a.QTY,
+			a.PRICE,
+			a.AMT,
+			a.CUR_PRICE,
+			a.CUR_PRICE * a.QTY as CUR_AMT,
+			a.CUR_PRICE * a.QTY - a.AMT as EARNING,
+			100 * (a.CUR_PRICE * a.QTY - a.AMT) / a.AMT as EARNING_RATE,
+			0 as DAILY_EARNING,
+			0 as DAILY_EARNING_RATE,
+			to_char(sysdate,'yyyymmddhhhh24miss') as REG_DATE
+		from (
+				 select a.symbol
+					  , sum(a.quantity)                              as qty
+					  , sum(a.pprice * a.quantity) / sum(a.quantity) as price
+					  , sum(a.pprice * a.quantity)                   as amt
+					  , (
+					 select b.CLOSE
+					 from TYAH005 b
+					 where b.TRADE_DATE =
+						   (select max(TRADE_DATE) from TYAH005 where SYMBOL = a.SYMBOL and TRADE_DATE <= #{tday})
+					   and b.SYMBOL = a.SYMBOL
+				 )                                                   as cur_price
+				 from quotes a
+				 where a.tdate <= #{tday}
+				 group by a.symbol
+			 ) a
+		]]>
+	</insert>
+
+
+	<select id="selectDailySummary" resultType="Map">
+		<![CDATA[
+
+		select
+			#{portfolioId} as PORTFOLIO_ID,
+			a.SYMBOL,
+			#{tday} as TDAY,
+			a.QTY,
+			a.PRICE,
+			a.AMT,
+			a.CUR_PRICE,
+			a.CUR_PRICE * a.QTY as CUR_AMT,
+			a.CUR_PRICE * a.QTY - a.AMT as EARNING,
+			100 * (a.CUR_PRICE * a.QTY - a.AMT) / a.AMT as EARNING_RATE,
+			0 as DAILY_EARNING,
+			0 as DAILY_EARNING_RATE,
+			to_char(sysdate,'yyyymmddhhhh24miss') as REG_DATE
+		from (
+				 select a.symbol
+					  , sum(a.quantity)                              as qty
+					  , sum(a.pprice * a.quantity) / sum(a.quantity) as price
+					  , sum(a.pprice * a.quantity)                   as amt
+					  , (
+					 select b.CLOSE
+					 from TYAH005 b
+					 where b.TRADE_DATE =
+						   (select max(TRADE_DATE) from TYAH005 where SYMBOL = a.SYMBOL and TRADE_DATE <= #{tday})
+					   and b.SYMBOL = a.SYMBOL
+				 )                                                   as cur_price
+				 from quotes a
+				 where a.tdate <= #{tday}
+				 group by a.symbol
+			 ) a
+
+		]]>
+	</select>
+
+
+
+	/**
+	 * <pre>
+	 *     tday 누적 수익 집계
+	 * </pre>
+	 * @param tday
+	 */
+	void doDailySummary(@Param("portfolioId") String portfolioId, @Param("tday") String tday);
+
+	/**
+	 * tday 누적 수익 집계 삭제
+	 * @param portfolioId
+	 * @param tday
+	 */
+	void deleteDailySummary(@Param("portfolioId") String portfolioId, @Param("tday") String tday);
+	List<Map> selectDailySummary(@Param("portfolioId") String portfolioId, @Param("tday") String tday);
+
+
+	@Transactional
+	public void doDailySummery(String portfolioId, String tday) {
+		summaryMapper.deleteDailySummary(portfolioId, tday);
+		summaryMapper.doDailySummary(portfolioId, tday);
+		//summaryMapper.selectDailySummary(portfolioId, tday);
+	}
+
+
+
+
+package whoana.finance.data;
+
+public class Summary001 {
+
+    String portfolioId;
+    String symbol;
+    String tday;
+    int qty;
+    double price;
+    double amt;
+    double curPrice;
+    double curAmt;
+    double earning;
+    double earningRate;
+    double dailyEarning;
+    double dailyEarningRate;
+    String regDate;
+
+    public String getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(String portfolioId) {
+        this.portfolioId = portfolioId;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public String getTday() {
+        return tday;
+    }
+
+    public void setTday(String tday) {
+        this.tday = tday;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getAmt() {
+        return amt;
+    }
+
+    public void setAmt(double amt) {
+        this.amt = amt;
+    }
+
+    public double getCurPrice() {
+        return curPrice;
+    }
+
+    public void setCurPrice(double curPrice) {
+        this.curPrice = curPrice;
+    }
+
+    public double getCurAmt() {
+        return curAmt;
+    }
+
+    public void setCurAmt(double curAmt) {
+        this.curAmt = curAmt;
+    }
+
+    public double getEarning() {
+        return earning;
+    }
+
+    public void setEarning(double earning) {
+        this.earning = earning;
+    }
+
+    public double getEarningRate() {
+        return earningRate;
+    }
+
+    public void setEarningRate(double earningRate) {
+        this.earningRate = earningRate;
+    }
+
+    public double getDailyEarning() {
+        return dailyEarning;
+    }
+
+    public void setDailyEarning(double dailyEarning) {
+        this.dailyEarning = dailyEarning;
+    }
+
+    public double getDailyEarningRate() {
+        return dailyEarningRate;
+    }
+
+    public void setDailyEarningRate(double dailyEarningRate) {
+        this.dailyEarningRate = dailyEarningRate;
+    }
+
+    public String getRegDate() {
+        return regDate;
+    }
+
+    public void setRegDate(String regDate) {
+        this.regDate = regDate;
+    }
+}
+
+
+
+
+/* 포트폴리오-수익률(일) */
+CREATE TABLE TSUM001 (
+                         PORTFOLIO_ID VARCHAR2(50) NOT NULL, /* 포트폴리오ID */
+                         SYMBOL VARCHAR2(10) NOT NULL, /* 심볼 */
+                         TDATE VARCHAR2(8) NOT NULL, /* 거래일 */
+                         QTY INTEGER, /* 매입수량 */
+                         PRICE DECIMAL(13,5), /* 평균매입단가 */
+                         AMT NUMBER(13), /* 매입금액 */
+                         CUR_PRICE DECIMAL(13,5), /* 현재가 */
+                         CUR_AMT NUMBER(13), /* 평가금액 */
+                         EARNING NUMBER(13), /* 수익 */
+                         EARNING_RATE DECIMAL(13,5), /* 수익률 */
+                         DAILY_EARNING NUMBER(13), /* 일수익 */
+                         DAILY_EARNING_RATE DECIMAL(13,5), /* 일수익률 */
+                         REG_DATE VARCHAR2(17) /* 등록일 */
+);
