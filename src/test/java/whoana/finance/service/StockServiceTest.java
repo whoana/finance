@@ -3,6 +3,9 @@ package whoana.finance.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
 import java.util.List;
 
@@ -25,6 +28,7 @@ import whoana.finance.util.Util;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.Interval;
+import yahoofinance.quotes.fx.FxQuote;
 
 
 //@RunWith(SpringBootTestContextBootstrapper.class)
@@ -38,6 +42,23 @@ public class StockServiceTest {
 
 	@Autowired
 	StockService stockService;
+
+
+	@Test
+	public void getDollarWonFxTest2() throws Exception {
+		try {
+			LocalDate from = LocalDate.parse("20181231", DateTimeFormatter.BASIC_ISO_DATE);
+			LocalDate to   = LocalDate.now().plusDays(1);
+			for(LocalDate date = from ; date.isBefore(to) ; date = date.plusDays(1)) {
+				String tday = date.format(DateTimeFormatter.BASIC_ISO_DATE);
+				stockService.getFx("USDKRW=X", tday);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw e;
+		}
+	}
 
 	@Test
 	public void getDollarWonFxTest() throws Exception {
@@ -205,12 +226,12 @@ public class StockServiceTest {
 		Calendar from = Calendar.getInstance();
 		from.set(Calendar.YEAR, 2021);
 		from.set(Calendar.MONTH, 11);
-		from.set(Calendar.DAY_OF_MONTH, 8);
+		from.set(Calendar.DAY_OF_MONTH, 14);
 
 		Calendar to = Calendar.getInstance();
 		to.set(Calendar.YEAR, 2021);
 		to.set(Calendar.MONTH, 11);
-		to.set(Calendar.DAY_OF_MONTH, 9);
+		to.set(Calendar.DAY_OF_MONTH, 25);
 
 		List<String> symbols = stockService.getMySymbols();
 		symbols.stream().forEach(symbol ->{

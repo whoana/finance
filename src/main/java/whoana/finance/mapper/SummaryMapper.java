@@ -32,4 +32,24 @@ public interface SummaryMapper {
 	public List<Map> selectAnnuallyEarning(@Param("year") String year);
 	
 	public void updateAnnuallyEarning(Map earning);
+
+
+
+	/**
+	 * <pre>
+	 *     tday 누적 수익 집계
+	 * </pre>
+	 * @param tday
+	 */
+	void doDailySummary(@Param("portfolioId") String portfolioId, @Param("tday") String tday);
+
+	/**
+	 * tday 누적 수익 집계 삭제
+	 * @param portfolioId
+	 * @param tday
+	 */
+	void deleteDailySummary(@Param("portfolioId") String portfolioId, @Param("tday") String tday);
+	List<Map> selectDailySummary(@Param("portfolioId") String portfolioId, @Param("tday") String tday);
+
+
 }

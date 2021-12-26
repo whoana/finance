@@ -229,5 +229,98 @@
 		   and SYMBOL  			     = #{symbol}
 		   and YEAR			         = #{year}
 	</update>
-	
+
+
+	<!-- 202112, 일별누적집계 삭제 -->
+	<delete id="deleteDailySummary">
+		delete from TSUM001 where PORTFOLIO_ID = #{portfolioId} and TDATE = #{tday}
+	</delete>
+	<!-- 202112, 일별누적집계  -->
+	<insert id="doDailySummary">
+		<![CDATA[
+		insert into TSUM001 (
+			PORTFOLIO_ID,
+			SYMBOL,
+			TDATE,
+			QTY,
+			PRICE,
+			AMT,
+			CUR_PRICE,
+			CUR_AMT,
+			EARNING,
+			EARNING_RATE,
+			DAILY_EARNING,
+			DAILY_EARNING_RATE,
+			REG_DATE )
+		select
+			#{portfolioId} as PORTFOLIO_ID,
+			a.SYMBOL,
+			#{tday} as TDATE,
+			a.QTY,
+			a.PRICE,
+			a.AMT,
+			a.CUR_PRICE,
+			a.CUR_PRICE * a.QTY as CUR_AMT,
+			a.CUR_PRICE * a.QTY - a.AMT as EARNING,
+			100 * (a.CUR_PRICE * a.QTY - a.AMT) / a.AMT as EARNING_RATE,
+			0 as DAILY_EARNING,
+			0 as DAILY_EARNING_RATE,
+			to_char(sysdate,'yyyymmddhhhh24miss') as REG_DATE
+		from (
+				 select a.symbol
+					  , sum(a.quantity)                              as qty
+					  , sum(a.pprice * a.quantity) / sum(a.quantity) as price
+					  , sum(a.pprice * a.quantity)                   as amt
+					  , (
+					 select b.CLOSE
+					 from TYAH005 b
+					 where b.TRADE_DATE =
+						   (select max(TRADE_DATE) from TYAH005 where SYMBOL = a.SYMBOL and TRADE_DATE <= #{tday})
+					   and b.SYMBOL = a.SYMBOL
+				 )                                                   as cur_price
+				 from quotes a
+				 where a.tdate <= #{tday}
+				 group by a.symbol
+			 ) a
+		]]>
+	</insert>
+
+
+	<select id="selectDailySummary" resultType="Map">
+		<![CDATA[
+
+		select
+			#{portfolioId} as PORTFOLIO_ID,
+			a.SYMBOL,
+			#{tday} as TDAY,
+			a.QTY,
+			a.PRICE,
+			a.AMT,
+			a.CUR_PRICE,
+			a.CUR_PRICE * a.QTY as CUR_AMT,
+			a.CUR_PRICE * a.QTY - a.AMT as EARNING,
+			100 * (a.CUR_PRICE * a.QTY - a.AMT) / a.AMT as EARNING_RATE,
+			0 as DAILY_EARNING,
+			0 as DAILY_EARNING_RATE,
+			to_char(sysdate,'yyyymmddhhhh24miss') as REG_DATE
+		from (
+				 select a.symbol
+					  , sum(a.quantity)                              as qty
+					  , sum(a.pprice * a.quantity) / sum(a.quantity) as price
+					  , sum(a.pprice * a.quantity)                   as amt
+					  , (
+					 select b.CLOSE
+					 from TYAH005 b
+					 where b.TRADE_DATE =
+						   (select max(TRADE_DATE) from TYAH005 where SYMBOL = a.SYMBOL and TRADE_DATE <= #{tday})
+					   and b.SYMBOL = a.SYMBOL
+				 )                                                   as cur_price
+				 from quotes a
+				 where a.tdate <= #{tday}
+				 group by a.symbol
+			 ) a
+
+		]]>
+	</select>
+
 </mapper>

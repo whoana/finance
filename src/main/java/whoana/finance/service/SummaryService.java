@@ -51,6 +51,13 @@ public class SummaryService {
 			summaryMapper.updateAnnuallyEarning(earning);
 		}
 	}
-	
-	
+
+
+	@Transactional
+	public void doDailySummery(String portfolioId, String tday) {
+		summaryMapper.deleteDailySummary(portfolioId, tday);
+		summaryMapper.doDailySummary(portfolioId, tday);
+		//summaryMapper.selectDailySummary(portfolioId, tday);
+	}
+
 }

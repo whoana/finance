@@ -97,6 +97,7 @@ select (141 * 23 + 136 * 11)/34.0 from dual;
 
 /* 포트폴리오-수익률(일) */
 CREATE TABLE TSUM001 (
+
                          PORTFOLIO_ID VARCHAR2(50) NOT NULL, /* 포트폴리오ID */
                          SYMBOL VARCHAR2(10) NOT NULL, /* 심볼 */
                          DAY VARCHAR2(8) NOT NULL, /* 거래일 */
@@ -111,3 +112,5 @@ CREATE TABLE TSUM001 (
                          DAILY_EARNING_RATE DECIMAL(13,5), /* 일수익률 */
                          REG_DATE VARCHAR2(17) /* 등록일 */
 );
+
+select * from TSUM001;
